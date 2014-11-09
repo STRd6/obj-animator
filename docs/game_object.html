@@ -39,12 +39,17 @@
   defaults I,
     active: <span class="literal">true</span>
     state: <span class="string">"idle"</span>
+    obj3D: <span class="keyword">new</span> THREE.Object3D
+    position: <span class="keyword">new</span> THREE.Vector3(I.position?.x ? <span class="number">0</span>, I.position?.y ? <span class="number">0</span>, I.position?.z ? <span class="number">0</span>)
+
+  I.obj3D.position.copy I.position
 
   self =
+    I: I
     move: (byX, byZ) -&gt;
       keyValues I.cachedModels.characters, (name, actions) -&gt;
         <span class="keyword">if</span> name <span class="keyword">is</span> I.name.toLowerCase()
-          <span class="keyword">if</span> idle = actions.idle[<span class="number">0</span>] 
+          <span class="keyword">if</span> idle = actions.idle[<span class="number">0</span>]
             x = idle.position.x + byX
             z = idle.position.z + byZ
 
@@ -56,8 +61,15 @@
       state = I.cachedModels.characters[characterName][name]
 
       frame = state.wrap (time / <span class="number">0.25</span>).floor()
-      <span class="keyword">debugger</span> 
-      I.obj3D.children[<span class="number">0</span>] = frame.children[<span class="number">0</span>]</code></pre>
+
+      <span class="keyword">if</span> I.obj3D.children[<span class="number">0</span>]
+        I.obj3D.remove I.obj3D.children[<span class="number">0</span>]
+
+      <span class="comment"># Need our own mesh copy</span>
+      mesh = frame.children[<span class="number">0</span>]
+      ourMesh = <span class="keyword">new</span> THREE.Mesh(mesh.geometry, mesh.material)
+
+      I.obj3D.add ourMesh</code></pre>
 </div>
         </li>
         
@@ -65,7 +77,7 @@
   </div>
   <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js"></script><script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js"></script><script>
   (function() {
   var ErrorReporter, bindUpdates, createEditor, exec, findInteractiveElements, readShebang, runners;
 

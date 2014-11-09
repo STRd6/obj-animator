@@ -1,11 +1,11 @@
 CACHE MANIFEST
-# 1415573027426
+# 1415576154409
 
 CACHE:
 index.html
 master.json.js
 https://code.jquery.com/jquery-1.10.1.min.js
-https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js
+https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js
 
 NETWORK:
 https://*
