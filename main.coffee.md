@@ -1,6 +1,8 @@
 Main
 ====
 
+    # TODO: This could come from cornerstone
+    {applyStylesheet} = require "util"
     core = require "core"
 
     Loader = require "./loader"
@@ -62,3 +64,10 @@ Main
           addedToScene = true
 
         updateCharacters scene, t, dt
+
+    applyStylesheet(require("./style"), "ui")
+
+    model =
+      name: "Duder"
+      health: "3/3"
+    document.body.appendChild require("./ui")(model)
