@@ -87,9 +87,13 @@ $.<span class="keyword">when</span>(Loader.finished(), TacticsCore.Loader.get())
   extend cachedModels, modelData
   extend spreadsheetAttributes, spreadsheetData
 
+  activeCharacter = <span class="literal">null</span>
+  theScene = <span class="literal">null</span>
+
   TacticsCore.init
     data: {}
     update: (scene, t, dt) -&gt;
+      theScene = scene
       <span class="comment"># Need this hack to prevent adding stuff to the scene each frame</span>
       <span class="comment"># adding to the scene each frame resets the model position</span>
       <span class="keyword">unless</span> addedToScene
@@ -100,17 +104,23 @@ $.<span class="keyword">when</span>(Loader.finished(), TacticsCore.Loader.get())
       characters.invoke <span class="string">"update"</span>, t, dt
 
     clickObjectsFn: -&gt;
-      characters.map (character) -&gt; character.I.obj3D
+      <span class="keyword">if</span> activeCharacter
+        theScene.children
+      <span class="keyword">else</span>
+        characters.map (character) -&gt; character.I.obj3D
     click: (results) -&gt;
-      console.log results
       <span class="keyword">if</span> results[<span class="number">0</span>]
+        console.log results[<span class="number">0</span>]
+
         {object} = results[<span class="number">0</span>]
 
-        gameObject = object.userData
+        console.log object
 
-        console.log gameObject.I.position
-
-        gameObject.I.position.x += <span class="number">20</span></code></pre>
+        <span class="keyword">if</span> character = object.userData.character
+          activeCharacter = character
+        <span class="keyword">else</span>
+          <span class="comment"># Move to location</span>
+          activeCharacter?.I.position.copy(object.position).setY(<span class="number">0</span>)</code></pre>
 </div>
         </li>
         
