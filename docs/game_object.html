@@ -37,6 +37,7 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">module.<span class="function"><span class="title">exports</span></span> = (I={}) -&gt;
   defaults I,
+    tOffset: <span class="number">0</span>
     active: <span class="literal">true</span>
     state: <span class="string">"idle"</span>
     obj3D: <span class="keyword">new</span> THREE.Object3D
@@ -68,8 +69,16 @@
       <span class="comment"># Need our own mesh copy</span>
       mesh = frame.children[<span class="number">0</span>]
       ourMesh = <span class="keyword">new</span> THREE.Mesh(mesh.geometry, mesh.material)
+      ourMesh.userData = self
 
-      I.obj3D.add ourMesh</code></pre>
+      I.obj3D.add ourMesh
+
+    update: (t, dt) -&gt;
+      <span class="comment"># Update position</span>
+      <span class="comment"># Update animations</span>
+      self.setAnimation(<span class="string">"idle"</span>, t + I.tOffset)
+      <span class="comment"># etc.</span>
+      I.obj3D.position.copy I.position</code></pre>
 </div>
         </li>
         

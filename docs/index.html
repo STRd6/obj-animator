@@ -57,26 +57,27 @@ bartender = <span class="literal">null</span>
 roboSheriff = <span class="literal">null</span>
 roboSheriff2 = <span class="literal">null</span>
 
+characters = []
+
 <span class="function"><span class="title">addCharacters</span></span> = (scene) -&gt;
   roboSheriff = GameObject
     name: <span class="string">"Robo Sheriff"</span>
     cachedModels: cachedModels
 
+  characters.push roboSheriff
   scene.add roboSheriff.I.obj3D
 
   roboSheriff2 = GameObject
     name: <span class="string">"Robo Sheriff"</span>
     cachedModels: cachedModels
+    tOffset: <span class="number">0.125</span>
     position:
       x: <span class="number">20</span>
       y: <span class="number">0</span>
       z: <span class="number">20</span>
 
-  scene.add roboSheriff2.I.obj3D
-
-<span class="function"><span class="title">updateCharacters</span></span> = (scene, t, dt) -&gt;
-  roboSheriff.setAnimation(<span class="string">"idle"</span>, t)
-  roboSheriff2.setAnimation(<span class="string">"idle"</span>, t + <span class="number">0.125</span>)
+  characters.push roboSheriff2
+  scene.add roboSheriff2.I.obj3D      
 
 $.<span class="keyword">when</span>(Loader.finished(), TacticsCore.Loader.get())
 .<span class="keyword">then</span> (modelData, spreadsheetData) -&gt;
@@ -96,12 +97,20 @@ $.<span class="keyword">when</span>(Loader.finished(), TacticsCore.Loader.get())
 
         addedToScene = <span class="literal">true</span>
 
-      updateCharacters scene, t, dt
+      characters.invoke <span class="string">"update"</span>, t, dt
+
+    clickObjectsFn: -&gt;
+      characters.map (character) -&gt; character.I.obj3D
     click: (results) -&gt;
+      console.log results
       <span class="keyword">if</span> results[<span class="number">0</span>]
         {object} = results[<span class="number">0</span>]
 
-        object.material.color.setRGB rand(), rand(), rand()</code></pre>
+        gameObject = object.userData
+
+        console.log gameObject.I.position
+
+        gameObject.I.position.x += <span class="number">20</span></code></pre>
 </div>
         </li>
         
