@@ -20,7 +20,7 @@ window["STRd6/obj-animator:master"]({
     },
     "main.coffee.md": {
       "path": "main.coffee.md",
-      "content": "Main\n====\n\n    core = require \"core\"\n\n    Loader = require \"./loader\"\n    modelData = require \"./models\"\n\n    GameObject = require \"./game_object\"\n\n    t = 0\n    cachedModels = {}\n    spreadsheetAttributes = {}\n\n    addedToScene = false\n\n    Loader.fromObj \"items\", modelData.items\n    Loader.fromObj \"terrain\", modelData.terrain\n    Loader.fromObj \"characters\", modelData.characters\n\n    core.Loader.get()\n\n    bartender = null\n    roboSheriff = null\n    roboSheriff2 = null\n\n    addCharacters = (scene) ->\n      roboSheriff = GameObject\n        name: \"Robo Sheriff\"\n        cachedModels: cachedModels\n\n      scene.add roboSheriff.I.obj3D\n\n      roboSheriff2 = GameObject\n        name: \"Robo Sheriff\"\n        cachedModels: cachedModels\n        position:\n          x: 20\n          y: 0\n          z: 20\n\n      scene.add roboSheriff2.I.obj3D\n\n    updateCharacters = (scene, t, dt) ->\n      roboSheriff.setAnimation(\"idle\", t)\n      roboSheriff2.setAnimation(\"idle\", t + 0.125)\n\n    $.when(Loader.finished(), core.Loader.get())\n    .then (modelData, spreadsheetData) ->\n      console.log modelData\n      console.log spreadsheetData\n\n      extend cachedModels, modelData\n      extend spreadsheetAttributes, spreadsheetData\n\n      core.init {}, (scene, t, dt) ->\n        # Need this hack to prevent adding stuff to the scene each frame\n        # adding to the scene each frame resets the model position\n        unless addedToScene\n          addCharacters scene\n\n          addedToScene = true\n\n        updateCharacters scene, t, dt\n",
+      "content": "Main\n====\n\n    TacticsCore = require \"tactics-core\"\n\n    Loader = require \"./loader\"\n    modelData = require \"./models\"\n\n    GameObject = require \"./game_object\"\n\n    t = 0\n    cachedModels = {}\n    spreadsheetAttributes = {}\n\n    addedToScene = false\n\n    Loader.fromObj \"items\", modelData.items\n    Loader.fromObj \"terrain\", modelData.terrain\n    Loader.fromObj \"characters\", modelData.characters\n\n    TacticsCore.Loader.get()\n\n    bartender = null\n    roboSheriff = null\n    roboSheriff2 = null\n\n    addCharacters = (scene) ->\n      roboSheriff = GameObject\n        name: \"Robo Sheriff\"\n        cachedModels: cachedModels\n\n      scene.add roboSheriff.I.obj3D\n\n      roboSheriff2 = GameObject\n        name: \"Robo Sheriff\"\n        cachedModels: cachedModels\n        position:\n          x: 20\n          y: 0\n          z: 20\n\n      scene.add roboSheriff2.I.obj3D\n\n    updateCharacters = (scene, t, dt) ->\n      roboSheriff.setAnimation(\"idle\", t)\n      roboSheriff2.setAnimation(\"idle\", t + 0.125)\n\n    $.when(Loader.finished(), TacticsCore.Loader.get())\n    .then (modelData, spreadsheetData) ->\n      console.log modelData\n      console.log spreadsheetData\n\n      extend cachedModels, modelData\n      extend spreadsheetAttributes, spreadsheetData\n\n      TacticsCore.init\n        data: {}\n        update: (scene, t, dt) ->\n          # Need this hack to prevent adding stuff to the scene each frame\n          # adding to the scene each frame resets the model position\n          unless addedToScene\n            addCharacters scene\n  \n            addedToScene = true\n  \n          updateCharacters scene, t, dt\n        click: (results) ->\n          if results[0]\n            {object} = results[0]\n\n            object.material.color.setRGB rand(), rand(), rand()\n",
       "mode": "100644",
       "type": "blob"
     },
@@ -32,7 +32,7 @@ window["STRd6/obj-animator:master"]({
     },
     "pixie.cson": {
       "path": "pixie.cson",
-      "content": "version: \"0.1.0\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"\n]\ndependencies:\n  util: \"distri/util:v0.1.0\"\n  core: \"distri/tactics-core:v0.2.2\"\n",
+      "content": "version: \"0.1.0\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"\n]\ndependencies:\n  util: \"distri/util:v0.1.0\"\n  \"tactics-core\": \"distri/tactics-core:v0.2.3-pre.0\"\n",
       "mode": "100644",
       "type": "blob"
     }
@@ -55,7 +55,7 @@ window["STRd6/obj-animator:master"]({
     },
     "main": {
       "path": "main",
-      "content": "(function() {\n  var GameObject, Loader, addCharacters, addedToScene, bartender, cachedModels, core, modelData, roboSheriff, roboSheriff2, spreadsheetAttributes, t, updateCharacters;\n\n  core = require(\"core\");\n\n  Loader = require(\"./loader\");\n\n  modelData = require(\"./models\");\n\n  GameObject = require(\"./game_object\");\n\n  t = 0;\n\n  cachedModels = {};\n\n  spreadsheetAttributes = {};\n\n  addedToScene = false;\n\n  Loader.fromObj(\"items\", modelData.items);\n\n  Loader.fromObj(\"terrain\", modelData.terrain);\n\n  Loader.fromObj(\"characters\", modelData.characters);\n\n  core.Loader.get();\n\n  bartender = null;\n\n  roboSheriff = null;\n\n  roboSheriff2 = null;\n\n  addCharacters = function(scene) {\n    roboSheriff = GameObject({\n      name: \"Robo Sheriff\",\n      cachedModels: cachedModels\n    });\n    scene.add(roboSheriff.I.obj3D);\n    roboSheriff2 = GameObject({\n      name: \"Robo Sheriff\",\n      cachedModels: cachedModels,\n      position: {\n        x: 20,\n        y: 0,\n        z: 20\n      }\n    });\n    return scene.add(roboSheriff2.I.obj3D);\n  };\n\n  updateCharacters = function(scene, t, dt) {\n    roboSheriff.setAnimation(\"idle\", t);\n    return roboSheriff2.setAnimation(\"idle\", t + 0.125);\n  };\n\n  $.when(Loader.finished(), core.Loader.get()).then(function(modelData, spreadsheetData) {\n    console.log(modelData);\n    console.log(spreadsheetData);\n    extend(cachedModels, modelData);\n    extend(spreadsheetAttributes, spreadsheetData);\n    return core.init({}, function(scene, t, dt) {\n      if (!addedToScene) {\n        addCharacters(scene);\n        addedToScene = true;\n      }\n      return updateCharacters(scene, t, dt);\n    });\n  });\n\n}).call(this);\n",
+      "content": "(function() {\n  var GameObject, Loader, TacticsCore, addCharacters, addedToScene, bartender, cachedModels, modelData, roboSheriff, roboSheriff2, spreadsheetAttributes, t, updateCharacters;\n\n  TacticsCore = require(\"tactics-core\");\n\n  Loader = require(\"./loader\");\n\n  modelData = require(\"./models\");\n\n  GameObject = require(\"./game_object\");\n\n  t = 0;\n\n  cachedModels = {};\n\n  spreadsheetAttributes = {};\n\n  addedToScene = false;\n\n  Loader.fromObj(\"items\", modelData.items);\n\n  Loader.fromObj(\"terrain\", modelData.terrain);\n\n  Loader.fromObj(\"characters\", modelData.characters);\n\n  TacticsCore.Loader.get();\n\n  bartender = null;\n\n  roboSheriff = null;\n\n  roboSheriff2 = null;\n\n  addCharacters = function(scene) {\n    roboSheriff = GameObject({\n      name: \"Robo Sheriff\",\n      cachedModels: cachedModels\n    });\n    scene.add(roboSheriff.I.obj3D);\n    roboSheriff2 = GameObject({\n      name: \"Robo Sheriff\",\n      cachedModels: cachedModels,\n      position: {\n        x: 20,\n        y: 0,\n        z: 20\n      }\n    });\n    return scene.add(roboSheriff2.I.obj3D);\n  };\n\n  updateCharacters = function(scene, t, dt) {\n    roboSheriff.setAnimation(\"idle\", t);\n    return roboSheriff2.setAnimation(\"idle\", t + 0.125);\n  };\n\n  $.when(Loader.finished(), TacticsCore.Loader.get()).then(function(modelData, spreadsheetData) {\n    console.log(modelData);\n    console.log(spreadsheetData);\n    extend(cachedModels, modelData);\n    extend(spreadsheetAttributes, spreadsheetData);\n    return TacticsCore.init({\n      data: {},\n      update: function(scene, t, dt) {\n        if (!addedToScene) {\n          addCharacters(scene);\n          addedToScene = true;\n        }\n        return updateCharacters(scene, t, dt);\n      },\n      click: function(results) {\n        var object;\n        if (results[0]) {\n          object = results[0].object;\n          return object.material.color.setRGB(rand(), rand(), rand());\n        }\n      }\n    });\n  });\n\n}).call(this);\n",
       "type": "blob"
     },
     "models": {
@@ -65,7 +65,7 @@ window["STRd6/obj-animator:master"]({
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"version\":\"0.1.0\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\",\"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"],\"dependencies\":{\"util\":\"distri/util:v0.1.0\",\"core\":\"distri/tactics-core:v0.2.2\"}};",
+      "content": "module.exports = {\"version\":\"0.1.0\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\",\"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"],\"dependencies\":{\"util\":\"distri/util:v0.1.0\",\"tactics-core\":\"distri/tactics-core:v0.2.3-pre.0\"}};",
       "type": "blob"
     }
   },
@@ -250,7 +250,7 @@ window["STRd6/obj-animator:master"]({
       },
       "dependencies": {}
     },
-    "core": {
+    "tactics-core": {
       "source": {
         "LICENSE": {
           "path": "LICENSE",
@@ -276,9 +276,15 @@ window["STRd6/obj-animator:master"]({
           "mode": "100644",
           "type": "blob"
         },
+        "lib/cube.coffee.md": {
+          "path": "lib/cube.coffee.md",
+          "content": "Cube\n====\n\n    CUBE_SIZE = 10\n\n    geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)\n\n    module.exports = (x, z) ->\n      material = new THREE.MeshBasicMaterial\n\n      grayness = rand() * 0.5 + 0.25\n      material.color.setRGB grayness, grayness, grayness\n\n      cube = new THREE.Mesh geometry, material\n      cube.position.set(x * CUBE_SIZE, -CUBE_SIZE/2, z * CUBE_SIZE)\n\n      return cube\n",
+          "mode": "100644",
+          "type": "blob"
+        },
         "lib/engine.coffee.md": {
           "path": "lib/engine.coffee.md",
-          "content": "Engine\n======\n \n    require \"cornerstone\"\n\n    module.exports = (I={}, self={}) ->\n      defaults I,\n        dt: 1/60\n        t: 0\n        paused: false\n        running: false\n\n      step = ->\n        unless I.paused\n          self.update?(I.t, I.dt)\n          I.t += I.dt\n\n        self.render?(I.t, I.dt)\n\n      animLoop = (timestamp) ->\n        step()\n\n        if I.running\n          window.requestAnimationFrame(animLoop)\n\n      if I.running\n        window.requestAnimationFrame(animLoop)\n\n      extend self,\n        start: ->\n          unless I.running\n            I.running = true\n            animLoop()\n\n        stop: ->\n          I.running = false\n",
+          "content": "Engine\n======\n\n    require \"cornerstone\"\n\n    module.exports = (I={}, self={}) ->\n      defaults I,\n        dt: 1/60\n        t: 0\n        paused: false\n        running: false\n\n      step = ->\n        unless I.paused\n          self.update?(I.t, I.dt)\n          I.t += I.dt\n\n        self.render?(I.t, I.dt)\n\n      animLoop = (timestamp) ->\n        step()\n\n        if I.running\n          window.requestAnimationFrame(animLoop)\n\n      if I.running\n        window.requestAnimationFrame(animLoop)\n\n      extend self,\n        start: ->\n          unless I.running\n            I.running = true\n            animLoop()\n\n        stop: ->\n          I.running = false\n",
           "mode": "100644",
           "type": "blob"
         },
@@ -288,9 +294,27 @@ window["STRd6/obj-animator:master"]({
           "mode": "100644",
           "type": "blob"
         },
+        "lib/lights.coffee.md": {
+          "path": "lib/lights.coffee.md",
+          "content": "Lights\n======\n\n    exports.ambient = ->\n      new THREE.AmbientLight 0x101030\n\n    exports.directional = ->\n      directionalLight = new THREE.DirectionalLight 0xffeedd\n      directionalLight.position.set 0, 0, 10\n\n      directionalLight\n",
+          "mode": "100644",
+          "type": "blob"
+        },
+        "lib/raypicker.coffee.md": {
+          "path": "lib/raypicker.coffee.md",
+          "content": "Raypicker\n=========\n\nSelect an object using raycasting in THREE.js\n\n    raycaster = new THREE.Raycaster()\n\n    mouseEventToVector = (event) ->\n      {clientX:x, clientY:y} = event\n\n      {\n        clientWidth:width\n        clientHeight:height\n        clientLeft:left\n        clientTop:top\n      } = event.currentTarget\n\n      x = x - left\n      y = y - top\n\n      vector = new THREE.Vector3()\n      vector.set(\n        ( x / width ) * 2 - 1,\n        - ( y / height ) * 2 + 1,\n        0\n      )\n\n      return vector\n\n    pick = (vector, objects, camera) ->\n      vector.unproject camera\n      vector.sub camera.position\n      vector.normalize()\n\n      raycaster.set camera.position, vector\n\n      intersects = raycaster.intersectObjects(objects, false)\n\n    module.exports = (camera, objectsFn, handler) ->\n      (event) ->\n        event.preventDefault()\n\n        vector = mouseEventToVector(event)\n\n        handler pick(vector, objectsFn(), camera)\n",
+          "mode": "100644",
+          "type": "blob"
+        },
+        "lib/threesome.coffee.md": {
+          "path": "lib/threesome.coffee.md",
+          "content": "Three JS Starter Kit\n====================\n\n    Engine = require \"./engine\"\n    Stats = require \"stats\"\n    Raypicker = require \"./raypicker\"\n\n    initCamera = ->\n      aspectRatio = window.innerWidth / window.innerHeight\n\n      camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 2000)\n      camera.position.set 0, 100, 200\n\n      return camera\n\n    initScene = ->\n      lights = require \"./lights\"\n\n      scene = new THREE.Scene()\n      scene.add lights.ambient()\n      scene.add lights.directional()\n\n      return scene\n\n    initFloor = (scene) ->\n      Cube = require \"./cube\"\n\n      [0...10].forEach (x) ->\n        [0...10].forEach (z) ->\n          scene.add Cube(x, z)\n\n    bindWindowEvents = (camera, renderer) ->\n      resize = ->\n        renderer.setSize window.innerWidth, window.innerHeight\n\n        camera.aspect = window.innerWidth / window.innerHeight\n        camera.updateProjectionMatrix()\n\n      $(window).resize resize\n\n      resize()\n\n    initStats = ->\n      updateStats = new Stats\n      updateStats.setMode(1)\n      renderStats = new Stats\n      renderStats.setMode(1)\n\n      updateStats.domElement.style.position = 'absolute';\n      updateStats.domElement.style.left = '0px';\n      updateStats.domElement.style.top = '0px';\n\n      document.body.appendChild( updateStats.domElement );\n\n      renderStats.domElement.style.position = 'absolute';\n      renderStats.domElement.style.right = '0px';\n      renderStats.domElement.style.top = '0px';\n\n      document.body.appendChild( renderStats.domElement );\n\n      return [updateStats, renderStats]\n\n    bindClickEvent = (camera, renderer, clickHandler, objectsFn) ->\n      renderer.domElement.onclick = Raypicker camera, objectsFn, clickHandler\n\n    debuggingLines = (scene) ->\n      addLine = (start, end, materialProperties) ->\n        materialProperties ?=\n          color: 0x0000ff\n\n        material = new THREE.LineBasicMaterial materialProperties\n\n        geometry = new THREE.Geometry()\n        geometry.vertices.push(start)\n        geometry.vertices.push(end)\n\n        line = new THREE.Line(geometry, material)\n        scene.add line\n\n      addLine(\n        new THREE.Vector3(0, 0, 0)\n        new THREE.Vector3(100, 0, 0)\n        color: 0xff0000\n      )\n\n      addLine(\n        new THREE.Vector3(0, 0, 0)\n        new THREE.Vector3(0, 100, 0)\n        color: 0x00ff00\n      )\n\n      addLine(\n        new THREE.Vector3(0, 0, 0)\n        new THREE.Vector3(0, 0, 100)\n        color: 0x0000ff\n      )\n\n    module.exports = (options={}) ->\n      {data, update, click, clickObjectsFn} = options\n\n      click ?= ->\n      clickObjectsFn ?= ->\n        scene.children\n\n      [updateStats, renderStats] = initStats()\n\n      camera = initCamera()\n      scene = initScene()\n\n      initFloor(scene)\n      debuggingLines(scene)\n\n      renderer = new THREE.WebGLRenderer()\n\n      bindWindowEvents(camera, renderer)\n      bindClickEvent camera, renderer, click, clickObjectsFn\n\n      document.body.appendChild renderer.domElement\n\n      engine = Engine data.engine,\n        update: (t, dt) ->\n          # Update the scene objects!\n          updateStats.begin()\n          update(scene, t, dt)\n          updateStats.end()\n\n        render: (t, dt) ->\n          camera.lookAt scene.position\n\n          renderStats.begin()\n          renderer.render scene, camera\n          renderStats.end()\n\n      engine.start()\n",
+          "mode": "100644",
+          "type": "blob"
+        },
         "main.coffee.md": {
           "path": "main.coffee.md",
-          "content": "Tactics Core\n============\n\nData structures that make up the core of Tactis Game.\n\n    {applyStylesheet} = require \"util\"\n\n    Threesome = require \"./lib/threesome\"\n\n    module.exports =\n      Character: require \"./character\"\n      Name: require \"./names\"\n      Loader: require \"./data_loader\"\n      init: (data, update) ->\n        applyStylesheet require(\"./style\")\n\n        Threesome.init(data, update)\n",
+          "content": "Tactics Core\n============\n\nData structures that make up the core of Tactis Game.\n\n    {applyStylesheet} = require \"util\"\n\n    Threesome = require \"./lib/threesome\"\n\n    module.exports =\n      Character: require \"./character\"\n      Name: require \"./names\"\n      Loader: require \"./data_loader\"\n      init: (options={}) ->\n        applyStylesheet require(\"./style\", \"tactics-core\")\n\n        Threesome(options)\n\n    if PACKAGE.name is \"ROOT\"\n      module.exports.init\n        data: {}\n        update: ->\n\n        click: (results) ->\n          if results[0]\n            {object} = results[0]\n    \n            object.material.color.setRGB rand(), rand(), rand()\n",
           "mode": "100644",
           "type": "blob"
         },
@@ -302,7 +326,13 @@ window["STRd6/obj-animator:master"]({
         },
         "pixie.cson": {
           "path": "pixie.cson",
-          "content": "version: \"0.2.2\"\nentryPoint: \"main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js\"\n]\ndependencies:\n  cornerstone: \"distri/cornerstone:v0.2.6\"\n  spreadsheet: \"distri/gdocs-spreadsheet:v0.1.0\"\n  stats: \"distri/stats.js:v0.11.0\"\n  util: \"distri/util:v0.1.0\"\n",
+          "content": "version: \"0.2.3-pre.0\"\nentryPoint: \"main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n  \"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"\n]\ndependencies:\n  cornerstone: \"distri/cornerstone:v0.2.6\"\n  spreadsheet: \"distri/gdocs-spreadsheet:v0.1.0\"\n  stats: \"distri/stats.js:v0.11.0\"\n  util: \"distri/util:v0.1.1\"\n",
+          "mode": "100644",
+          "type": "blob"
+        },
+        "style.styl": {
+          "path": "style.styl",
+          "content": "*\n  box-sizing: border-box\n\nhtml\n  height: 100%\n\nbody\n  background-color: #000\n  color: #080\n  font-family: \"HelveticaNeue-Light\", \"Helvetica Neue Light\", \"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif\n  font-weight: 300\n  font-size: 18px\n  height: 100%\n  margin: 0\n  overflow: hidden\n  user-select: none\n",
           "mode": "100644",
           "type": "blob"
         },
@@ -318,6 +348,12 @@ window["STRd6/obj-animator:master"]({
           "mode": "100644",
           "type": "blob"
         },
+        "test/key_values.coffee": {
+          "path": "test/key_values.coffee",
+          "content": "describe \"keyValues\", ->\n  it \"should iterate keys and values of an object\", (done) ->\n    o = \n      test: \"value\"\n\n    keyValues o, (key, value) ->\n      assert.equal key, \"test\"\n      assert.equal value, \"value\"\n\n      done()\n",
+          "mode": "100644",
+          "type": "blob"
+        },
         "test/loading.coffee": {
           "path": "test/loading.coffee",
           "content": "mocha.globals ['jQuery*']\n\nDataLoader = require \"../data_loader\"\n\ndescribe \"Character loading\", ->\n  it \"should load data from remote spreadsheets\", (done) ->\n    DataLoader.characters().then (characters) ->\n      console.log characters\n      done()\n    .done()\n\ndescribe \"Name loading\", ->\n  it \"should load name data from remote spreadsheets\", (done) ->\n    DataLoader.names().then (names) ->\n      console.log names\n      done()\n    .done()\n",
@@ -326,7 +362,7 @@ window["STRd6/obj-animator:master"]({
         },
         "test/main.coffee": {
           "path": "test/main.coffee",
-          "content": "Main = require \"../main\"\n\ndescribe \"main\", ->\n  it \"should expose Character\", ->\n    assert Main.Character\n\n  it \"should init\", ->\n    assert Main.init({}, ->)\n",
+          "content": "Main = require \"../main\"\n\ndescribe \"main\", ->\n  it \"should expose Character\", ->\n    assert Main.Character\n",
           "mode": "100644",
           "type": "blob"
         },
@@ -335,31 +371,6 @@ window["STRd6/obj-animator:master"]({
           "content": "Names = require \"../names\"\nDataLoader = require \"../data_loader\"\n\nDataLoader.names().then (data) ->\n  NamePicker = Names(data)\n\n  describe \"Names\", ->\n    it \"should pick at random\", ->\n      name = NamePicker.random()\n\n      console.log name\n      assert name\n\n    it \"should pick a scoped name\", ->\n      name = NamePicker.random\n        culture: \"Monster\"\n\n      console.log name\n      assert name\n\n    it \"should pick a name scoped by culture and gender\", ->\n      name = NamePicker.random\n        culture: \"Humanoid\"\n        gender: \"F\"\n\n      console.log name\n      assert name\n",
           "mode": "100644",
           "type": "blob"
-        },
-        "style.styl": {
-          "path": "style.styl",
-          "content": "*\n  box-sizing: border-box\n\nhtml\n  height: 100%\n\nbody\n  background-color: #000\n  color: #080\n  font-family: \"HelveticaNeue-Light\", \"Helvetica Neue Light\", \"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif\n  font-weight: 300\n  font-size: 18px\n  height: 100%\n  margin: 0\n  overflow: hidden\n  user-select: none\n",
-          "mode": "100644"
-        },
-        "lib/threesome.coffee.md": {
-          "path": "lib/threesome.coffee.md",
-          "content": "Three JS Starter Kit\n====================\n\n    Engine = require \"./engine\"\n    Stats = require \"stats\"\n\n    initCamera = ->\n      aspectRatio = window.innerWidth / window.innerHeight\n\n      camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 2000)\n      camera.position.set 0, 100, 200\n\n      return camera\n\n    initScene = ->\n      lights = require \"./lights\"\n\n      scene = new THREE.Scene()\n      scene.add lights.ambient()\n      scene.add lights.directional()\n\n      return scene\n\n    initFloor = (scene) ->\n      Cube = require \"./cube\"\n\n      [0...10].forEach (x) ->\n        [0...10].forEach (z) ->\n          scene.add Cube(x, z)\n\n    bindWindowEvents = (camera, renderer) ->\n      resize = ->\n        renderer.setSize window.innerWidth, window.innerHeight\n\n        camera.aspect = window.innerWidth / window.innerHeight\n        camera.updateProjectionMatrix()\n\n      $(window).resize resize\n\n      resize()\n\n    initStats = ->\n      updateStats = new Stats\n      updateStats.setMode(1)\n      renderStats = new Stats\n      renderStats.setMode(1)\n\n      updateStats.domElement.style.position = 'absolute';\n      updateStats.domElement.style.left = '0px';\n      updateStats.domElement.style.top = '0px';\n\n      document.body.appendChild( updateStats.domElement );\n\n      renderStats.domElement.style.position = 'absolute';\n      renderStats.domElement.style.right = '0px';\n      renderStats.domElement.style.top = '0px';\n\n      document.body.appendChild( renderStats.domElement );\n\n      return [updateStats, renderStats]\n\n    module.exports =\n      init: (data={}, update) ->\n        [updateStats, renderStats] = initStats()\n    \n        camera = initCamera()\n        scene = initScene()\n\n        initFloor(scene)\n\n        renderer = new THREE.WebGLRenderer()\n\n        bindWindowEvents(camera, renderer)\n        document.body.appendChild renderer.domElement\n\n        engine = Engine data.engine,\n          update: (t, dt) ->\n            # Update the scene objects!\n            updateStats.begin()\n            update(scene, t, dt)\n            updateStats.end()\n\n          render: (t, dt) ->\n            camera.lookAt scene.position\n\n            renderStats.begin()\n            renderer.render scene, camera\n            renderStats.end()\n\n        engine.start()\n",
-          "mode": "100644"
-        },
-        "lib/lights.coffee.md": {
-          "path": "lib/lights.coffee.md",
-          "content": "Lights\n======\n\n    exports.ambient = ->\n      new THREE.AmbientLight 0x101030\n\n    exports.directional = ->\n      directionalLight = new THREE.DirectionalLight 0xffeedd\n      directionalLight.position.set 0, 0, 10\n\n      directionalLight\n",
-          "mode": "100644"
-        },
-        "lib/cube.coffee.md": {
-          "path": "lib/cube.coffee.md",
-          "content": "Cube\n====\n\n    CUBE_SIZE = 10\n\n    geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)\n    material = new THREE.MeshBasicMaterial\n      color: 0xffffff\n      wireframe: true\n\n    module.exports = (x, z) ->\n      cube = new THREE.Object3D()\n      cube.position.set(x * CUBE_SIZE, -CUBE_SIZE/2, z * CUBE_SIZE)\n\n      mesh = new THREE.Mesh geometry, material\n      cube.add(mesh)\n\n      return cube\n",
-          "mode": "100644"
-        },
-        "test/key_values.coffee": {
-          "path": "test/key_values.coffee",
-          "content": "describe \"keyValues\", ->\n  it \"should iterate keys and values of an object\", (done) ->\n    o = \n      test: \"value\"\n\n    keyValues o, (key, value) ->\n      assert.equal key, \"test\"\n      assert.equal value, \"value\"\n\n      done()\n",
-          "mode": "100644"
         }
       },
       "distribution": {
@@ -373,6 +384,11 @@ window["STRd6/obj-animator:master"]({
           "content": "(function() {\n  var Spreadsheet, characterDataTransform, characterFromRemote, get, loader, sheetData;\n\n  Spreadsheet = require(\"spreadsheet\");\n\n  sheetData = null;\n\n  loader = null;\n\n  get = function() {\n    if (loader) {\n      return loader;\n    }\n    loader = Spreadsheet.load(\"0ArtCBkZR37MmdFJqbjloVEp1OFZLWDJ6M29OcXQ1WkE\");\n    return loader;\n  };\n\n  module.exports = {\n    characters: function() {\n      return get().then(function(data) {\n        return characterFromRemote(data.characters);\n      });\n    },\n    names: function() {\n      return get().then(function(data) {\n        return data.names.map(function(row) {\n          return {\n            name: row.name.trim(),\n            gender: row.gender.trim(),\n            culture: row.culture.trim()\n          };\n        });\n      });\n    },\n    get: get\n  };\n\n  characterDataTransform = function(data) {\n    var _ref;\n    extend(data, {\n      healthMax: data.healthmax,\n      abilities: data.abilities.split(','),\n      passives: ((_ref = data.passives) != null ? _ref : \"\").split(','),\n      spriteName: data.sprite\n    });\n    delete data.healthmax;\n    delete data.sprite;\n    return data;\n  };\n\n  characterFromRemote = function(data) {\n    var results;\n    console.log(data);\n    results = {};\n    data.forEach(function(datum) {\n      return results[datum.name] = characterDataTransform(datum);\n    });\n    return results;\n  };\n\n}).call(this);\n",
           "type": "blob"
         },
+        "lib/cube": {
+          "path": "lib/cube",
+          "content": "(function() {\n  var CUBE_SIZE, geometry;\n\n  CUBE_SIZE = 10;\n\n  geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);\n\n  module.exports = function(x, z) {\n    var cube, grayness, material;\n    material = new THREE.MeshBasicMaterial;\n    grayness = rand() * 0.5 + 0.25;\n    material.color.setRGB(grayness, grayness, grayness);\n    cube = new THREE.Mesh(geometry, material);\n    cube.position.set(x * CUBE_SIZE, -CUBE_SIZE / 2, z * CUBE_SIZE);\n    return cube;\n  };\n\n}).call(this);\n",
+          "type": "blob"
+        },
         "lib/engine": {
           "path": "lib/engine",
           "content": "(function() {\n  require(\"cornerstone\");\n\n  module.exports = function(I, self) {\n    var animLoop, step;\n    if (I == null) {\n      I = {};\n    }\n    if (self == null) {\n      self = {};\n    }\n    defaults(I, {\n      dt: 1 / 60,\n      t: 0,\n      paused: false,\n      running: false\n    });\n    step = function() {\n      if (!I.paused) {\n        if (typeof self.update === \"function\") {\n          self.update(I.t, I.dt);\n        }\n        I.t += I.dt;\n      }\n      return typeof self.render === \"function\" ? self.render(I.t, I.dt) : void 0;\n    };\n    animLoop = function(timestamp) {\n      step();\n      if (I.running) {\n        return window.requestAnimationFrame(animLoop);\n      }\n    };\n    if (I.running) {\n      window.requestAnimationFrame(animLoop);\n    }\n    return extend(self, {\n      start: function() {\n        if (!I.running) {\n          I.running = true;\n          return animLoop();\n        }\n      },\n      stop: function() {\n        return I.running = false;\n      }\n    });\n  };\n\n}).call(this);\n",
@@ -383,9 +399,24 @@ window["STRd6/obj-animator:master"]({
           "content": "(function() {\n  require(\"cornerstone\");\n\n  extend(global, {\n    keyValues: function(object, fn) {\n      Object.keys(object).forEach(function(key) {\n        var value;\n        value = object[key];\n        return fn(key, value, object);\n      });\n      return object;\n    },\n    Model: (function(oldModel) {\n      return function(I, self) {\n        self = oldModel(I, self);\n        extend(self, {\n          attrData: function(name, DataModel) {\n            I[name] = DataModel(I[name]);\n            return self[name] = function(newValue) {\n              if (arguments.length > 0) {\n                return I[name] = DataModel(newValue);\n              } else {\n                return I[name];\n              }\n            };\n          }\n        });\n        return self;\n      };\n    })(Model)\n  });\n\n}).call(this);\n",
           "type": "blob"
         },
+        "lib/lights": {
+          "path": "lib/lights",
+          "content": "(function() {\n  exports.ambient = function() {\n    return new THREE.AmbientLight(0x101030);\n  };\n\n  exports.directional = function() {\n    var directionalLight;\n    directionalLight = new THREE.DirectionalLight(0xffeedd);\n    directionalLight.position.set(0, 0, 10);\n    return directionalLight;\n  };\n\n}).call(this);\n",
+          "type": "blob"
+        },
+        "lib/raypicker": {
+          "path": "lib/raypicker",
+          "content": "(function() {\n  var mouseEventToVector, pick, raycaster;\n\n  raycaster = new THREE.Raycaster();\n\n  mouseEventToVector = function(event) {\n    var height, left, top, vector, width, x, y, _ref;\n    x = event.clientX, y = event.clientY;\n    _ref = event.currentTarget, width = _ref.clientWidth, height = _ref.clientHeight, left = _ref.clientLeft, top = _ref.clientTop;\n    x = x - left;\n    y = y - top;\n    vector = new THREE.Vector3();\n    vector.set((x / width) * 2 - 1, -(y / height) * 2 + 1, 0);\n    return vector;\n  };\n\n  pick = function(vector, objects, camera) {\n    var intersects;\n    vector.unproject(camera);\n    vector.sub(camera.position);\n    vector.normalize();\n    raycaster.set(camera.position, vector);\n    return intersects = raycaster.intersectObjects(objects, false);\n  };\n\n  module.exports = function(camera, objectsFn, handler) {\n    return function(event) {\n      var vector;\n      event.preventDefault();\n      vector = mouseEventToVector(event);\n      return handler(pick(vector, objectsFn(), camera));\n    };\n  };\n\n}).call(this);\n",
+          "type": "blob"
+        },
+        "lib/threesome": {
+          "path": "lib/threesome",
+          "content": "(function() {\n  var Engine, Raypicker, Stats, bindClickEvent, bindWindowEvents, debuggingLines, initCamera, initFloor, initScene, initStats;\n\n  Engine = require(\"./engine\");\n\n  Stats = require(\"stats\");\n\n  Raypicker = require(\"./raypicker\");\n\n  initCamera = function() {\n    var aspectRatio, camera;\n    aspectRatio = window.innerWidth / window.innerHeight;\n    camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 2000);\n    camera.position.set(0, 100, 200);\n    return camera;\n  };\n\n  initScene = function() {\n    var lights, scene;\n    lights = require(\"./lights\");\n    scene = new THREE.Scene();\n    scene.add(lights.ambient());\n    scene.add(lights.directional());\n    return scene;\n  };\n\n  initFloor = function(scene) {\n    var Cube;\n    Cube = require(\"./cube\");\n    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function(x) {\n      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function(z) {\n        return scene.add(Cube(x, z));\n      });\n    });\n  };\n\n  bindWindowEvents = function(camera, renderer) {\n    var resize;\n    resize = function() {\n      renderer.setSize(window.innerWidth, window.innerHeight);\n      camera.aspect = window.innerWidth / window.innerHeight;\n      return camera.updateProjectionMatrix();\n    };\n    $(window).resize(resize);\n    return resize();\n  };\n\n  initStats = function() {\n    var renderStats, updateStats;\n    updateStats = new Stats;\n    updateStats.setMode(1);\n    renderStats = new Stats;\n    renderStats.setMode(1);\n    updateStats.domElement.style.position = 'absolute';\n    updateStats.domElement.style.left = '0px';\n    updateStats.domElement.style.top = '0px';\n    document.body.appendChild(updateStats.domElement);\n    renderStats.domElement.style.position = 'absolute';\n    renderStats.domElement.style.right = '0px';\n    renderStats.domElement.style.top = '0px';\n    document.body.appendChild(renderStats.domElement);\n    return [updateStats, renderStats];\n  };\n\n  bindClickEvent = function(camera, renderer, clickHandler, objectsFn) {\n    return renderer.domElement.onclick = Raypicker(camera, objectsFn, clickHandler);\n  };\n\n  debuggingLines = function(scene) {\n    var addLine;\n    addLine = function(start, end, materialProperties) {\n      var geometry, line, material;\n      if (materialProperties == null) {\n        materialProperties = {\n          color: 0x0000ff\n        };\n      }\n      material = new THREE.LineBasicMaterial(materialProperties);\n      geometry = new THREE.Geometry();\n      geometry.vertices.push(start);\n      geometry.vertices.push(end);\n      line = new THREE.Line(geometry, material);\n      return scene.add(line);\n    };\n    addLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(100, 0, 0), {\n      color: 0xff0000\n    });\n    addLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 100, 0), {\n      color: 0x00ff00\n    });\n    return addLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 100), {\n      color: 0x0000ff\n    });\n  };\n\n  module.exports = function(options) {\n    var camera, click, clickObjectsFn, data, engine, renderStats, renderer, scene, update, updateStats, _ref;\n    if (options == null) {\n      options = {};\n    }\n    data = options.data, update = options.update, click = options.click, clickObjectsFn = options.clickObjectsFn;\n    if (click == null) {\n      click = function() {};\n    }\n    if (clickObjectsFn == null) {\n      clickObjectsFn = function() {\n        return scene.children;\n      };\n    }\n    _ref = initStats(), updateStats = _ref[0], renderStats = _ref[1];\n    camera = initCamera();\n    scene = initScene();\n    initFloor(scene);\n    debuggingLines(scene);\n    renderer = new THREE.WebGLRenderer();\n    bindWindowEvents(camera, renderer);\n    bindClickEvent(camera, renderer, click, clickObjectsFn);\n    document.body.appendChild(renderer.domElement);\n    engine = Engine(data.engine, {\n      update: function(t, dt) {\n        updateStats.begin();\n        update(scene, t, dt);\n        return updateStats.end();\n      },\n      render: function(t, dt) {\n        camera.lookAt(scene.position);\n        renderStats.begin();\n        renderer.render(scene, camera);\n        return renderStats.end();\n      }\n    });\n    return engine.start();\n  };\n\n}).call(this);\n",
+          "type": "blob"
+        },
         "main": {
           "path": "main",
-          "content": "(function() {\n  var Threesome, applyStylesheet;\n\n  applyStylesheet = require(\"util\").applyStylesheet;\n\n  Threesome = require(\"./lib/threesome\");\n\n  module.exports = {\n    Character: require(\"./character\"),\n    Name: require(\"./names\"),\n    Loader: require(\"./data_loader\"),\n    init: function(data, update) {\n      applyStylesheet(require(\"./style\"));\n      return Threesome.init(data, update);\n    }\n  };\n\n}).call(this);\n",
+          "content": "(function() {\n  var Threesome, applyStylesheet;\n\n  applyStylesheet = require(\"util\").applyStylesheet;\n\n  Threesome = require(\"./lib/threesome\");\n\n  module.exports = {\n    Character: require(\"./character\"),\n    Name: require(\"./names\"),\n    Loader: require(\"./data_loader\"),\n    init: function(options) {\n      if (options == null) {\n        options = {};\n      }\n      applyStylesheet(require(\"./style\", \"tactics-core\"));\n      return Threesome(options);\n    }\n  };\n\n  if (PACKAGE.name === \"ROOT\") {\n    module.exports.init({\n      data: {},\n      update: function() {},\n      click: function(results) {\n        var object;\n        if (results[0]) {\n          object = results[0].object;\n          return object.material.color.setRGB(rand(), rand(), rand());\n        }\n      }\n    });\n  }\n\n}).call(this);\n",
           "type": "blob"
         },
         "names": {
@@ -395,7 +426,12 @@ window["STRd6/obj-animator:master"]({
         },
         "pixie": {
           "path": "pixie",
-          "content": "module.exports = {\"version\":\"0.2.2\",\"entryPoint\":\"main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\",\"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js\"],\"dependencies\":{\"cornerstone\":\"distri/cornerstone:v0.2.6\",\"spreadsheet\":\"distri/gdocs-spreadsheet:v0.1.0\",\"stats\":\"distri/stats.js:v0.11.0\",\"util\":\"distri/util:v0.1.0\"}};",
+          "content": "module.exports = {\"version\":\"0.2.3-pre.0\",\"entryPoint\":\"main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\",\"https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js\"],\"dependencies\":{\"cornerstone\":\"distri/cornerstone:v0.2.6\",\"spreadsheet\":\"distri/gdocs-spreadsheet:v0.1.0\",\"stats\":\"distri/stats.js:v0.11.0\",\"util\":\"distri/util:v0.1.1\"}};",
+          "type": "blob"
+        },
+        "style": {
+          "path": "style",
+          "content": "module.exports = \"* {\\n  -ms-box-sizing: border-box;\\n  -moz-box-sizing: border-box;\\n  -webkit-box-sizing: border-box;\\n  box-sizing: border-box;\\n}\\n\\nhtml {\\n  height: 100%;\\n}\\n\\nbody {\\n  background-color: #000;\\n  color: #080;\\n  font-family: \\\"HelveticaNeue-Light\\\", \\\"Helvetica Neue Light\\\", \\\"Helvetica Neue\\\", Helvetica, Arial, \\\"Lucida Grande\\\", sans-serif;\\n  font-weight: 300;\\n  font-size: 18px;\\n  height: 100%;\\n  margin: 0;\\n  overflow: hidden;\\n  -ms-user-select: none;\\n  -moz-user-select: none;\\n  -webkit-user-select: none;\\n  user-select: none;\\n}\";",
           "type": "blob"
         },
         "test/character": {
@@ -408,6 +444,11 @@ window["STRd6/obj-animator:master"]({
           "content": "(function() {\n  var Engine, equalEnough;\n\n  Engine = require(\"../lib/engine\");\n\n  equalEnough = function(a, b) {\n    assert((b - a) < 0.0001);\n    return assert((a - b) < 0.0001);\n  };\n\n  describe(\"engine\", function() {\n    it(\"should start and stop\", function(done) {\n      var engine;\n      engine = Engine({}, {\n        update: function() {\n          engine.stop();\n          return done();\n        }\n      });\n      return engine.start();\n    });\n    return it(\"should update about 60 times a second\", function(done) {\n      var c, engine;\n      c = 0;\n      engine = Engine({}, {\n        update: function(t, dt) {\n          equalEnough(t, c * 1 / 60);\n          c += 1;\n          return assert.equal(dt, 1 / 60);\n        }\n      });\n      engine.start();\n      return setTimeout(function() {\n        console.log(c);\n        assert(c > 58);\n        assert(c < 62);\n        engine.stop();\n        return done();\n      }, 1000);\n    });\n  });\n\n}).call(this);\n",
           "type": "blob"
         },
+        "test/key_values": {
+          "path": "test/key_values",
+          "content": "(function() {\n  describe(\"keyValues\", function() {\n    return it(\"should iterate keys and values of an object\", function(done) {\n      var o;\n      o = {\n        test: \"value\"\n      };\n      return keyValues(o, function(key, value) {\n        assert.equal(key, \"test\");\n        assert.equal(value, \"value\");\n        return done();\n      });\n    });\n  });\n\n}).call(this);\n",
+          "type": "blob"
+        },
         "test/loading": {
           "path": "test/loading",
           "content": "(function() {\n  var DataLoader;\n\n  mocha.globals(['jQuery*']);\n\n  DataLoader = require(\"../data_loader\");\n\n  describe(\"Character loading\", function() {\n    return it(\"should load data from remote spreadsheets\", function(done) {\n      return DataLoader.characters().then(function(characters) {\n        console.log(characters);\n        return done();\n      }).done();\n    });\n  });\n\n  describe(\"Name loading\", function() {\n    return it(\"should load name data from remote spreadsheets\", function(done) {\n      return DataLoader.names().then(function(names) {\n        console.log(names);\n        return done();\n      }).done();\n    });\n  });\n\n}).call(this);\n",
@@ -415,51 +456,26 @@ window["STRd6/obj-animator:master"]({
         },
         "test/main": {
           "path": "test/main",
-          "content": "(function() {\n  var Main;\n\n  Main = require(\"../main\");\n\n  describe(\"main\", function() {\n    it(\"should expose Character\", function() {\n      return assert(Main.Character);\n    });\n    return it(\"should init\", function() {\n      return assert(Main.init({}, function() {}));\n    });\n  });\n\n}).call(this);\n",
+          "content": "(function() {\n  var Main;\n\n  Main = require(\"../main\");\n\n  describe(\"main\", function() {\n    return it(\"should expose Character\", function() {\n      return assert(Main.Character);\n    });\n  });\n\n}).call(this);\n",
           "type": "blob"
         },
         "test/names": {
           "path": "test/names",
           "content": "(function() {\n  var DataLoader, Names;\n\n  Names = require(\"../names\");\n\n  DataLoader = require(\"../data_loader\");\n\n  DataLoader.names().then(function(data) {\n    var NamePicker;\n    NamePicker = Names(data);\n    return describe(\"Names\", function() {\n      it(\"should pick at random\", function() {\n        var name;\n        name = NamePicker.random();\n        console.log(name);\n        return assert(name);\n      });\n      it(\"should pick a scoped name\", function() {\n        var name;\n        name = NamePicker.random({\n          culture: \"Monster\"\n        });\n        console.log(name);\n        return assert(name);\n      });\n      return it(\"should pick a name scoped by culture and gender\", function() {\n        var name;\n        name = NamePicker.random({\n          culture: \"Humanoid\",\n          gender: \"F\"\n        });\n        console.log(name);\n        return assert(name);\n      });\n    });\n  });\n\n}).call(this);\n",
           "type": "blob"
-        },
-        "style": {
-          "path": "style",
-          "content": "module.exports = \"* {\\n  -ms-box-sizing: border-box;\\n  -moz-box-sizing: border-box;\\n  -webkit-box-sizing: border-box;\\n  box-sizing: border-box;\\n}\\n\\nhtml {\\n  height: 100%;\\n}\\n\\nbody {\\n  background-color: #000;\\n  color: #080;\\n  font-family: \\\"HelveticaNeue-Light\\\", \\\"Helvetica Neue Light\\\", \\\"Helvetica Neue\\\", Helvetica, Arial, \\\"Lucida Grande\\\", sans-serif;\\n  font-weight: 300;\\n  font-size: 18px;\\n  height: 100%;\\n  margin: 0;\\n  overflow: hidden;\\n  -ms-user-select: none;\\n  -moz-user-select: none;\\n  -webkit-user-select: none;\\n  user-select: none;\\n}\";",
-          "type": "blob"
-        },
-        "lib/threesome": {
-          "path": "lib/threesome",
-          "content": "(function() {\n  var Engine, Stats, bindWindowEvents, initCamera, initFloor, initScene, initStats;\n\n  Engine = require(\"./engine\");\n\n  Stats = require(\"stats\");\n\n  initCamera = function() {\n    var aspectRatio, camera;\n    aspectRatio = window.innerWidth / window.innerHeight;\n    camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 2000);\n    camera.position.set(0, 100, 200);\n    return camera;\n  };\n\n  initScene = function() {\n    var lights, scene;\n    lights = require(\"./lights\");\n    scene = new THREE.Scene();\n    scene.add(lights.ambient());\n    scene.add(lights.directional());\n    return scene;\n  };\n\n  initFloor = function(scene) {\n    var Cube;\n    Cube = require(\"./cube\");\n    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function(x) {\n      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function(z) {\n        return scene.add(Cube(x, z));\n      });\n    });\n  };\n\n  bindWindowEvents = function(camera, renderer) {\n    var resize;\n    resize = function() {\n      renderer.setSize(window.innerWidth, window.innerHeight);\n      camera.aspect = window.innerWidth / window.innerHeight;\n      return camera.updateProjectionMatrix();\n    };\n    $(window).resize(resize);\n    return resize();\n  };\n\n  initStats = function() {\n    var renderStats, updateStats;\n    updateStats = new Stats;\n    updateStats.setMode(1);\n    renderStats = new Stats;\n    renderStats.setMode(1);\n    updateStats.domElement.style.position = 'absolute';\n    updateStats.domElement.style.left = '0px';\n    updateStats.domElement.style.top = '0px';\n    document.body.appendChild(updateStats.domElement);\n    renderStats.domElement.style.position = 'absolute';\n    renderStats.domElement.style.right = '0px';\n    renderStats.domElement.style.top = '0px';\n    document.body.appendChild(renderStats.domElement);\n    return [updateStats, renderStats];\n  };\n\n  module.exports = {\n    init: function(data, update) {\n      var camera, engine, renderStats, renderer, scene, updateStats, _ref;\n      if (data == null) {\n        data = {};\n      }\n      _ref = initStats(), updateStats = _ref[0], renderStats = _ref[1];\n      camera = initCamera();\n      scene = initScene();\n      initFloor(scene);\n      renderer = new THREE.WebGLRenderer();\n      bindWindowEvents(camera, renderer);\n      document.body.appendChild(renderer.domElement);\n      engine = Engine(data.engine, {\n        update: function(t, dt) {\n          updateStats.begin();\n          update(scene, t, dt);\n          return updateStats.end();\n        },\n        render: function(t, dt) {\n          camera.lookAt(scene.position);\n          renderStats.begin();\n          renderer.render(scene, camera);\n          return renderStats.end();\n        }\n      });\n      return engine.start();\n    }\n  };\n\n}).call(this);\n",
-          "type": "blob"
-        },
-        "lib/lights": {
-          "path": "lib/lights",
-          "content": "(function() {\n  exports.ambient = function() {\n    return new THREE.AmbientLight(0x101030);\n  };\n\n  exports.directional = function() {\n    var directionalLight;\n    directionalLight = new THREE.DirectionalLight(0xffeedd);\n    directionalLight.position.set(0, 0, 10);\n    return directionalLight;\n  };\n\n}).call(this);\n",
-          "type": "blob"
-        },
-        "lib/cube": {
-          "path": "lib/cube",
-          "content": "(function() {\n  var CUBE_SIZE, geometry, material;\n\n  CUBE_SIZE = 10;\n\n  geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);\n\n  material = new THREE.MeshBasicMaterial({\n    color: 0xffffff,\n    wireframe: true\n  });\n\n  module.exports = function(x, z) {\n    var cube, mesh;\n    cube = new THREE.Object3D();\n    cube.position.set(x * CUBE_SIZE, -CUBE_SIZE / 2, z * CUBE_SIZE);\n    mesh = new THREE.Mesh(geometry, material);\n    cube.add(mesh);\n    return cube;\n  };\n\n}).call(this);\n",
-          "type": "blob"
-        },
-        "test/key_values": {
-          "path": "test/key_values",
-          "content": "(function() {\n  describe(\"keyValues\", function() {\n    return it(\"should iterate keys and values of an object\", function(done) {\n      var o;\n      o = {\n        test: \"value\"\n      };\n      return keyValues(o, function(key, value) {\n        assert.equal(key, \"test\");\n        assert.equal(value, \"value\");\n        return done();\n      });\n    });\n  });\n\n}).call(this);\n",
-          "type": "blob"
         }
       },
       "progenitor": {
         "url": "http://www.danielx.net/editor/"
       },
-      "version": "0.2.2",
+      "version": "0.2.3-pre.0",
       "entryPoint": "main",
       "remoteDependencies": [
         "https://code.jquery.com/jquery-1.10.1.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.min.js"
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js"
       ],
       "repository": {
-        "branch": "v0.2.2",
+        "branch": "v0.2.3-pre.0",
         "default_branch": "master",
         "full_name": "distri/tactics-core",
         "homepage": null,
@@ -2904,159 +2920,64 @@ window["STRd6/obj-animator:master"]({
           "source": {
             "LICENSE": {
               "path": "LICENSE",
-              "mode": "100644",
               "content": "The MIT License (MIT)\n\nCopyright (c) 2014 \n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+              "mode": "100644",
               "type": "blob"
             },
             "README.md": {
               "path": "README.md",
-              "mode": "100644",
               "content": "util\n====\n\nSmall utility methods for JS\n",
+              "mode": "100644",
               "type": "blob"
             },
             "main.coffee.md": {
               "path": "main.coffee.md",
+              "content": "Util\n====\n\n    module.exports =\n      approach: (current, target, amount) ->\n        (target - current).clamp(-amount, amount) + current\n\nApply a stylesheet idempotently.\n\n      applyStylesheet: (style, id=\"primary\") ->\n        styleNode = document.createElement(\"style\")\n        styleNode.innerHTML = style\n        styleNode.id = id\n\n        if previousStyleNode = document.head.querySelector(\"style##{id}\")\n          previousStyleNode.parentNode.removeChild(previousStyleNode)\n\n        document.head.appendChild(styleNode)\n\n      defaults: (target, objects...) ->\n        for object in objects\n          for name of object\n            unless target.hasOwnProperty(name)\n              target[name] = object[name]\n\n        return target\n\n      extend: (target, sources...) ->\n        for source in sources\n          for name of source\n            target[name] = source[name]\n\n        return target\n",
               "mode": "100644",
-              "content": "Util\n====\n\n    module.exports =\n      approach: (current, target, amount) ->\n        (target - current).clamp(-amount, amount) + current\n\nApply a stylesheet idempotently.\n\n      applyStylesheet: (style, id=\"primary\") ->\n        styleNode = document.createElement(\"style\")\n        styleNode.innerHTML = style\n        styleNode.id = id\n\n        if previousStyleNode = document.head.querySelector(\"style##{id}\")\n          previousStyleNode.parentNode.removeChild(prevousStyleNode)\n\n        document.head.appendChild(styleNode)\n\n      defaults: (target, objects...) ->\n        for object in objects\n          for name of object\n            unless target.hasOwnProperty(name)\n              target[name] = object[name]\n\n        return target\n\n      extend: (target, sources...) ->\n        for source in sources\n          for name of source\n            target[name] = source[name]\n\n        return target\n",
               "type": "blob"
             },
             "pixie.cson": {
               "path": "pixie.cson",
+              "content": "version: \"0.1.1\"\n",
               "mode": "100644",
-              "content": "version: \"0.1.0\"\n",
               "type": "blob"
+            },
+            "test/test.coffee": {
+              "path": "test/test.coffee",
+              "content": "{applyStylesheet} = require \"../main\"\n\ndescribe \"util\", ->\n  it \"should apply stylesheets\", ->\n    applyStylesheet(\"body { background-color: red; }\", \"test\")\n    applyStylesheet(\"body { background-color: #EEE; }\", \"test\")\n",
+              "mode": "100644"
             }
           },
           "distribution": {
             "main": {
               "path": "main",
-              "content": "(function() {\n  var __slice = [].slice;\n\n  module.exports = {\n    approach: function(current, target, amount) {\n      return (target - current).clamp(-amount, amount) + current;\n    },\n    applyStylesheet: function(style, id) {\n      var previousStyleNode, styleNode;\n      if (id == null) {\n        id = \"primary\";\n      }\n      styleNode = document.createElement(\"style\");\n      styleNode.innerHTML = style;\n      styleNode.id = id;\n      if (previousStyleNode = document.head.querySelector(\"style#\" + id)) {\n        previousStyleNode.parentNode.removeChild(prevousStyleNode);\n      }\n      return document.head.appendChild(styleNode);\n    },\n    defaults: function() {\n      var name, object, objects, target, _i, _len;\n      target = arguments[0], objects = 2 <= arguments.length ? __slice.call(arguments, 1) : [];\n      for (_i = 0, _len = objects.length; _i < _len; _i++) {\n        object = objects[_i];\n        for (name in object) {\n          if (!target.hasOwnProperty(name)) {\n            target[name] = object[name];\n          }\n        }\n      }\n      return target;\n    },\n    extend: function() {\n      var name, source, sources, target, _i, _len;\n      target = arguments[0], sources = 2 <= arguments.length ? __slice.call(arguments, 1) : [];\n      for (_i = 0, _len = sources.length; _i < _len; _i++) {\n        source = sources[_i];\n        for (name in source) {\n          target[name] = source[name];\n        }\n      }\n      return target;\n    }\n  };\n\n}).call(this);\n",
+              "content": "(function() {\n  var __slice = [].slice;\n\n  module.exports = {\n    approach: function(current, target, amount) {\n      return (target - current).clamp(-amount, amount) + current;\n    },\n    applyStylesheet: function(style, id) {\n      var previousStyleNode, styleNode;\n      if (id == null) {\n        id = \"primary\";\n      }\n      styleNode = document.createElement(\"style\");\n      styleNode.innerHTML = style;\n      styleNode.id = id;\n      if (previousStyleNode = document.head.querySelector(\"style#\" + id)) {\n        previousStyleNode.parentNode.removeChild(previousStyleNode);\n      }\n      return document.head.appendChild(styleNode);\n    },\n    defaults: function() {\n      var name, object, objects, target, _i, _len;\n      target = arguments[0], objects = 2 <= arguments.length ? __slice.call(arguments, 1) : [];\n      for (_i = 0, _len = objects.length; _i < _len; _i++) {\n        object = objects[_i];\n        for (name in object) {\n          if (!target.hasOwnProperty(name)) {\n            target[name] = object[name];\n          }\n        }\n      }\n      return target;\n    },\n    extend: function() {\n      var name, source, sources, target, _i, _len;\n      target = arguments[0], sources = 2 <= arguments.length ? __slice.call(arguments, 1) : [];\n      for (_i = 0, _len = sources.length; _i < _len; _i++) {\n        source = sources[_i];\n        for (name in source) {\n          target[name] = source[name];\n        }\n      }\n      return target;\n    }\n  };\n\n}).call(this);\n",
               "type": "blob"
             },
             "pixie": {
               "path": "pixie",
-              "content": "module.exports = {\"version\":\"0.1.0\"};",
+              "content": "module.exports = {\"version\":\"0.1.1\"};",
+              "type": "blob"
+            },
+            "test/test": {
+              "path": "test/test",
+              "content": "(function() {\n  var applyStylesheet;\n\n  applyStylesheet = require(\"../main\").applyStylesheet;\n\n  describe(\"util\", function() {\n    return it(\"should apply stylesheets\", function() {\n      applyStylesheet(\"body { background-color: red; }\", \"test\");\n      return applyStylesheet(\"body { background-color: #EEE; }\", \"test\");\n    });\n  });\n\n}).call(this);\n",
               "type": "blob"
             }
           },
           "progenitor": {
-            "url": "http://strd6.github.io/editor/"
+            "url": "http://www.danielx.net/editor/more-cleanup/"
           },
-          "version": "0.1.0",
+          "version": "0.1.1",
           "entryPoint": "main",
           "repository": {
-            "id": 18501018,
-            "name": "util",
-            "full_name": "distri/util",
-            "owner": {
-              "login": "distri",
-              "id": 6005125,
-              "avatar_url": "https://avatars.githubusercontent.com/u/6005125?",
-              "gravatar_id": "192f3f168409e79c42107f081139d9f3",
-              "url": "https://api.github.com/users/distri",
-              "html_url": "https://github.com/distri",
-              "followers_url": "https://api.github.com/users/distri/followers",
-              "following_url": "https://api.github.com/users/distri/following{/other_user}",
-              "gists_url": "https://api.github.com/users/distri/gists{/gist_id}",
-              "starred_url": "https://api.github.com/users/distri/starred{/owner}{/repo}",
-              "subscriptions_url": "https://api.github.com/users/distri/subscriptions",
-              "organizations_url": "https://api.github.com/users/distri/orgs",
-              "repos_url": "https://api.github.com/users/distri/repos",
-              "events_url": "https://api.github.com/users/distri/events{/privacy}",
-              "received_events_url": "https://api.github.com/users/distri/received_events",
-              "type": "Organization",
-              "site_admin": false
-            },
-            "private": false,
-            "html_url": "https://github.com/distri/util",
-            "description": "Small utility methods for JS",
-            "fork": false,
-            "url": "https://api.github.com/repos/distri/util",
-            "forks_url": "https://api.github.com/repos/distri/util/forks",
-            "keys_url": "https://api.github.com/repos/distri/util/keys{/key_id}",
-            "collaborators_url": "https://api.github.com/repos/distri/util/collaborators{/collaborator}",
-            "teams_url": "https://api.github.com/repos/distri/util/teams",
-            "hooks_url": "https://api.github.com/repos/distri/util/hooks",
-            "issue_events_url": "https://api.github.com/repos/distri/util/issues/events{/number}",
-            "events_url": "https://api.github.com/repos/distri/util/events",
-            "assignees_url": "https://api.github.com/repos/distri/util/assignees{/user}",
-            "branches_url": "https://api.github.com/repos/distri/util/branches{/branch}",
-            "tags_url": "https://api.github.com/repos/distri/util/tags",
-            "blobs_url": "https://api.github.com/repos/distri/util/git/blobs{/sha}",
-            "git_tags_url": "https://api.github.com/repos/distri/util/git/tags{/sha}",
-            "git_refs_url": "https://api.github.com/repos/distri/util/git/refs{/sha}",
-            "trees_url": "https://api.github.com/repos/distri/util/git/trees{/sha}",
-            "statuses_url": "https://api.github.com/repos/distri/util/statuses/{sha}",
-            "languages_url": "https://api.github.com/repos/distri/util/languages",
-            "stargazers_url": "https://api.github.com/repos/distri/util/stargazers",
-            "contributors_url": "https://api.github.com/repos/distri/util/contributors",
-            "subscribers_url": "https://api.github.com/repos/distri/util/subscribers",
-            "subscription_url": "https://api.github.com/repos/distri/util/subscription",
-            "commits_url": "https://api.github.com/repos/distri/util/commits{/sha}",
-            "git_commits_url": "https://api.github.com/repos/distri/util/git/commits{/sha}",
-            "comments_url": "https://api.github.com/repos/distri/util/comments{/number}",
-            "issue_comment_url": "https://api.github.com/repos/distri/util/issues/comments/{number}",
-            "contents_url": "https://api.github.com/repos/distri/util/contents/{+path}",
-            "compare_url": "https://api.github.com/repos/distri/util/compare/{base}...{head}",
-            "merges_url": "https://api.github.com/repos/distri/util/merges",
-            "archive_url": "https://api.github.com/repos/distri/util/{archive_format}{/ref}",
-            "downloads_url": "https://api.github.com/repos/distri/util/downloads",
-            "issues_url": "https://api.github.com/repos/distri/util/issues{/number}",
-            "pulls_url": "https://api.github.com/repos/distri/util/pulls{/number}",
-            "milestones_url": "https://api.github.com/repos/distri/util/milestones{/number}",
-            "notifications_url": "https://api.github.com/repos/distri/util/notifications{?since,all,participating}",
-            "labels_url": "https://api.github.com/repos/distri/util/labels{/name}",
-            "releases_url": "https://api.github.com/repos/distri/util/releases{/id}",
-            "created_at": "2014-04-06T22:42:56Z",
-            "updated_at": "2014-04-06T22:42:56Z",
-            "pushed_at": "2014-04-06T22:42:56Z",
-            "git_url": "git://github.com/distri/util.git",
-            "ssh_url": "git@github.com:distri/util.git",
-            "clone_url": "https://github.com/distri/util.git",
-            "svn_url": "https://github.com/distri/util",
-            "homepage": null,
-            "size": 0,
-            "stargazers_count": 0,
-            "watchers_count": 0,
-            "language": null,
-            "has_issues": true,
-            "has_downloads": true,
-            "has_wiki": true,
-            "forks_count": 0,
-            "mirror_url": null,
-            "open_issues_count": 0,
-            "forks": 0,
-            "open_issues": 0,
-            "watchers": 0,
+            "branch": "v0.1.1",
             "default_branch": "master",
-            "master_branch": "master",
-            "permissions": {
-              "admin": true,
-              "push": true,
-              "pull": true
-            },
-            "organization": {
-              "login": "distri",
-              "id": 6005125,
-              "avatar_url": "https://avatars.githubusercontent.com/u/6005125?",
-              "gravatar_id": "192f3f168409e79c42107f081139d9f3",
-              "url": "https://api.github.com/users/distri",
-              "html_url": "https://github.com/distri",
-              "followers_url": "https://api.github.com/users/distri/followers",
-              "following_url": "https://api.github.com/users/distri/following{/other_user}",
-              "gists_url": "https://api.github.com/users/distri/gists{/gist_id}",
-              "starred_url": "https://api.github.com/users/distri/starred{/owner}{/repo}",
-              "subscriptions_url": "https://api.github.com/users/distri/subscriptions",
-              "organizations_url": "https://api.github.com/users/distri/orgs",
-              "repos_url": "https://api.github.com/users/distri/repos",
-              "events_url": "https://api.github.com/users/distri/events{/privacy}",
-              "received_events_url": "https://api.github.com/users/distri/received_events",
-              "type": "Organization",
-              "site_admin": false
-            },
-            "network_count": 0,
-            "subscribers_count": 2,
-            "branch": "v0.1.0",
+            "full_name": "distri/util",
+            "homepage": null,
+            "description": "Small utility methods for JS",
+            "html_url": "https://github.com/distri/util",
+            "url": "https://api.github.com/repos/distri/util",
             "publishBranch": "gh-pages"
           },
           "dependencies": {}

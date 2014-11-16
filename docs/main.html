@@ -34,7 +34,7 @@
               </div>
               
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">core = require <span class="string">"core"</span>
+            <div class="content"><pre><code class="lang-coffeescript">TacticsCore = require <span class="string">"tactics-core"</span>
 
 Loader = require <span class="string">"./loader"</span>
 modelData = require <span class="string">"./models"</span>
@@ -51,7 +51,7 @@ Loader.fromObj <span class="string">"items"</span>, modelData.items
 Loader.fromObj <span class="string">"terrain"</span>, modelData.terrain
 Loader.fromObj <span class="string">"characters"</span>, modelData.characters
 
-core.Loader.get()
+TacticsCore.Loader.get()
 
 bartender = <span class="literal">null</span>
 roboSheriff = <span class="literal">null</span>
@@ -78,7 +78,7 @@ roboSheriff2 = <span class="literal">null</span>
   roboSheriff.setAnimation(<span class="string">"idle"</span>, t)
   roboSheriff2.setAnimation(<span class="string">"idle"</span>, t + <span class="number">0.125</span>)
 
-$.<span class="keyword">when</span>(Loader.finished(), core.Loader.get())
+$.<span class="keyword">when</span>(Loader.finished(), TacticsCore.Loader.get())
 .<span class="keyword">then</span> (modelData, spreadsheetData) -&gt;
   console.log modelData
   console.log spreadsheetData
@@ -86,15 +86,22 @@ $.<span class="keyword">when</span>(Loader.finished(), core.Loader.get())
   extend cachedModels, modelData
   extend spreadsheetAttributes, spreadsheetData
 
-  core.init {}, (scene, t, dt) -&gt;
-    <span class="comment"># Need this hack to prevent adding stuff to the scene each frame</span>
-    <span class="comment"># adding to the scene each frame resets the model position</span>
-    <span class="keyword">unless</span> addedToScene
-      addCharacters scene
+  TacticsCore.init
+    data: {}
+    update: (scene, t, dt) -&gt;
+      <span class="comment"># Need this hack to prevent adding stuff to the scene each frame</span>
+      <span class="comment"># adding to the scene each frame resets the model position</span>
+      <span class="keyword">unless</span> addedToScene
+        addCharacters scene
 
-      addedToScene = <span class="literal">true</span>
+        addedToScene = <span class="literal">true</span>
 
-    updateCharacters scene, t, dt</code></pre>
+      updateCharacters scene, t, dt
+    click: (results) -&gt;
+      <span class="keyword">if</span> results[<span class="number">0</span>]
+        {object} = results[<span class="number">0</span>]
+
+        object.material.color.setRGB rand(), rand(), rand()</code></pre>
 </div>
         </li>
         
